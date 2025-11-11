@@ -24,44 +24,81 @@ def step():
     if izq >= der:
         return {"done": True}
     
+    swap = False
+    a = j
+    b = j + 1
+    
     if tecla:
-        swap = False
-        a = j
-        b = j + 1
-        if items[a] > items[b]:
-            items[a], items[b] = items[b], items[a]
-            swap = True
+        if j >= der:
+            der -= 1
+            tecla = False
+            j = der
+            if izq >= der:
+                return {"done": True}
+            a = j
+            b = j - 1
+            if items[a] < items[b]:
+                items[a], items[b] = items[b], items[a]
+                swap = True
+            j -= 1
+            if j <= izq:
+                izq += 1
+                tecla = True
+                j = izq
+                if izq >= der:
+                    return {"done": True}
+        else:
+            a = j
+            b = j + 1
+            if items[a] > items[b]:
+                items[a], items[b] = items[b], items[a]
+                swap = True
             j += 1
             if j >= der:
-                j = der - 1
                 der -= 1
                 tecla = False
-                i =+ 1
+                j = der
+                if izq >= der:
+                    return {"done": True}
     
     else:
         a = j
         b = j - 1
-        if items[a] < items[b]:
-            items[a], items[b] = items[b], items[a]
-            swap = True
+        if j <= izq:
+            izq += 1
+            tecla = True
+            j = izq
+            if izq >= der:
+                return {"done": True}
+            a = j
+            b = j + 1
+            if items[a] > items[b]:
+                items[a], items[b] = items[b], items[a]
+                swap = True
+            j += 1
+            if j >= der:
+                der -= 1
+                tecla = False
+                j = der
+                if izq >= der:
+                    return {"done": True}
+        else:
+            if items[a] < items[b]:
+                items[a], items[b] = items[b], items[a]
+                swap = True
             j -= 1
             if j <= izq:
-                j = izq
                 izq += 1
                 tecla = True
-                i += 1
+                j = izq
+                if izq >= der:
+                    return {"done": True}
     return {"a":a, "b":b, "swap": swap, "done":False}
 
 
     
 
 
-    
-    
-
-    
-    
-    
     
     
     
