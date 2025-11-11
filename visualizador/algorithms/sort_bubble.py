@@ -1,5 +1,3 @@
-# Contrato: init(vals), step() -> {"a": int, "b": int, "swap": bool, "done": bool}
-
 items = []
 n = 0
 i = 0
@@ -13,11 +11,22 @@ def init(vals):
     j = 0
 
 def step():
-    # TODO:
-    # 1) Elegir índices a y b a comparar en este micro-paso (según tu Bubble).
-    # 2) Si corresponde, hacer el intercambio real en items[a], items[b] y marcar swap=True.
-    # 3) Avanzar punteros (preparar el próximo paso).
-    # 4) Devolver {"a": a, "b": b, "swap": swap, "done": False}.
-    #
-    # Cuando no queden pasos, devolvé {"done": True}.
-    return {"done": True}
+    global items, n, i, j, swapped
+    if i>=n-1:
+        return {"a": -1, "b": -1, "swap": False, "done": True}
+    if j < n - i - 1:
+        if items[j]<items[j+1]:
+            items[j], items[j+1]=items[j+1],items[j]
+            swapped=True
+            resultado= {"a":j, "b":j+1 ,"swap":True, "done":False}
+        else:
+            resultado= {"a":j, "b":j+1 ,"swap":False, "done":False}
+        j=j+1
+        return resultado
+    else:
+        if not swapped:
+            return {"a": -1, "b": -1, "swap": False, "done": True}
+        swapped=False
+        j=0
+        i=i+1
+        return step
