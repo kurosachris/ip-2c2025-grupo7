@@ -17,6 +17,22 @@ def init(vals):
     fase = "buscar"
 
 def step():
+    global items, n, i, j, min_idx, fase
+    a = min_idx  #estas variables las utilizamos para el swap
+    b = j
+    swap = False
+    #fase buscar? 
+    if [j] <= min_idx:
+        min_idx = [j]
+        j += 1
+    return {"a": min_idx, "b": j, "swap": False, "done": False}
+
+    #fase swap
+    if items[a] > items[b]:
+        items[a], items[b] = items[b], items[a]
+        swap = True
+        
+
     # TODO:
     # - Fase "buscar": comparar j con min_idx, actualizar min_idx, avanzar j.
     #   Devolver {"a": min_idx, "b": j_actual, "swap": False, "done": False}.
