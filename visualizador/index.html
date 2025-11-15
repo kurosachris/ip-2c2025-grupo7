@@ -81,7 +81,10 @@
     running: false,
     speed: 50,
     highlight: {a:null,b:null},
-    imageBitmap: null
+    imageBitmap: null,
+    startTime: null,
+    swapCount: 0,
+    metricType: 'time'
   };
 
   // ===== Helpers =====
@@ -233,6 +236,9 @@
     var afterData = function(){
       state.original = JSON.parse(JSON.stringify(state.items));
       state.highlight = {a:null,b:null};
+      state.startTime = null;
+      state.swapCount = 0;
+      updateMetricDisplay();
       draw();
 
       // intentar leer Python
@@ -266,6 +272,9 @@
     var after = function(){
       state.original = JSON.parse(JSON.stringify(state.items));
       state.highlight = {a:null,b:null};
+      state.startTime = null;
+      state.swapCount = 0;
+      updateMetricDisplay();
       draw();
       ensurePy().then(function(p){
         if(!p) return;
@@ -283,9 +292,32 @@
     }
   }
 
+  function updateMetricDisplay(){
+    var metricType = state.metricType;
+    var display = $('metricValue');
+    if(!display) return;
+    
+    if(metricType === 'time'){
+      if(state.startTime && !state.running){
+        var elapsed = (performance.now() - state.startTime) / 1000;
+        display.textContent = elapsed.toFixed(3) + ' s';
+      } else if(state.startTime && state.running){
+        var current = (performance.now() - state.startTime) / 1000;
+        display.textContent = current.toFixed(3) + ' s';
+      } else {
+        display.textContent = '0.000 s';
+      }
+    } else if(metricType === 'swaps'){
+      display.textContent = String(state.swapCount);
+    }
+  }
+
   function run(){
     if(!pyStepFn) return;
     state.running = true;
+    state.startTime = performance.now();
+    state.swapCount = 0;
+    updateMetricDisplay();
     (function loop(){
       if(!state.running) return;
       var t0 = performance.now();
@@ -293,6 +325,7 @@
       if(act.done){
         state.running=false;
         state.highlight = {a:null,b:null};
+        updateMetricDisplay();
         draw();
         return;
       }
@@ -300,7 +333,9 @@
       if(act.swap){
         var a=act.a, b=act.b, tmp=state.items[a];
         state.items[a]=state.items[b]; state.items[b]=tmp;
+        state.swapCount++;
       }
+      updateMetricDisplay();
       draw();
       var wait = Math.max(5, parseInt($('speed').value,10) - (performance.now()-t0)); // 👈 mínimo 5ms
       setTimeout(loop, wait);
@@ -308,10 +343,12 @@
   }
   function stepOnce(){
     if(!pyStepFn) return;
+    if(!state.startTime) state.startTime = performance.now();
     var act = pyStep();
     if(act.done){
       state.running=false;
       state.highlight = {a:null,b:null};
+      updateMetricDisplay();
       draw();
       return;
     }
@@ -319,13 +356,19 @@
     if(act.swap){
       var a=act.a, b=act.b, tmp=state.items[a];
       state.items[a]=state.items[b]; state.items[b]=tmp;
+      state.swapCount++;
+      updateMetricDisplay();
     }
+    updateMetricDisplay();
     draw();
   }
   function reset(){
     state.running=false;
     state.highlight = {a:null,b:null};
     state.items = JSON.parse(JSON.stringify(state.original));
+    state.startTime = null;
+    state.swapCount = 0;
+    updateMetricDisplay();
     draw();
   }
 
@@ -335,6 +378,10 @@
 
     $('mode').addEventListener('change', function(){ state.mode = this.value; rebuildData(); });
     $('algorithm').addEventListener('change', function(){ rebuildData(); });
+    $('metricType').addEventListener('change', function(){ 
+      state.metricType = this.value; 
+      updateMetricDisplay(); 
+    });
 
     $('size').addEventListener('input', function(){ $('sizeVal').textContent = String(this.value); rebuildData(); });
     $('speed').addEventListener('input', function(){ $('speedVal').textContent = String(this.value)+' ms'; state.speed = parseInt(this.value,10); });
@@ -344,6 +391,7 @@
     $('pause').addEventListener('click', function(){
       state.running=false;
       state.highlight = {a:null,b:null};
+      updateMetricDisplay();
       draw();
     });
     $('step').addEventListener('click', function(){ stepOnce(); });
@@ -374,6 +422,7 @@
 
     $('sizeVal').textContent = $('size').value;
     $('speedVal').textContent = $('speed').value + ' ms';
+    updateMetricDisplay();
     rebuildData();
   });
   </script>
@@ -397,10 +446,15 @@
             <option value="bubble">Bubble Sort (PY)</option>
             <option value="insertion">Insertion Sort (PY)</option>
             <option value="selection">Selection Sort (PY)</option>
-            <option value="quick">Quick Sort (PY)</option>
-            <option value="merge">Merge Sort (PY)</option>
             <option value="cocktail">Cocktail Sort (PY)</option>
           </select>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <select id="metricType">
+            <option value="time">Tiempo (segundos)</option>
+            <option value="swaps">Cantidad de swaps</option>
+          </select>
+          <span class="pill" id="metricValue">0.000 s</span>
         </div>
       </div>
 
