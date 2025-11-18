@@ -1,5 +1,4 @@
 # Contrato: init(vals), step() -> {"a": int, "b": int, "swap": bool, "done": bool}
-"""" Tiene un bug que no ordena correctamente la lista """
 
 items = []
 n = 0
