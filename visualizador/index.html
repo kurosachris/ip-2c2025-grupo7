@@ -83,8 +83,7 @@
     highlight: {a:null,b:null},
     imageBitmap: null,
     startTime: null,
-    swapCount: 0,
-    metricType: 'time'
+    swapCount: 0
   };
 
   // ===== Helpers =====
@@ -292,24 +291,20 @@
     }
   }
 
+  // ===== Métricas =====
   function updateMetricDisplay(){
-    var metricType = state.metricType;
-    var display = $('metricValue');
-    if(!display) return;
+    var timeDisplay = $('metricTime');
+    var swapsDisplay = $('metricSwaps');
+    if(!timeDisplay || !swapsDisplay) return;
     
-    if(metricType === 'time'){
-      if(state.startTime && !state.running){
-        var elapsed = (performance.now() - state.startTime) / 1000;
-        display.textContent = elapsed.toFixed(3) + ' s';
-      } else if(state.startTime && state.running){
-        var current = (performance.now() - state.startTime) / 1000;
-        display.textContent = current.toFixed(3) + ' s';
-      } else {
-        display.textContent = '0.000 s';
-      }
-    } else if(metricType === 'swaps'){
-      display.textContent = String(state.swapCount);
+    if(state.startTime){
+      var elapsed = (performance.now() - state.startTime) / 1000;
+      timeDisplay.textContent = elapsed.toFixed(3) + ' s';
+    } else {
+      timeDisplay.textContent = '0.000 s';
     }
+    
+    swapsDisplay.textContent = String(state.swapCount);
   }
 
   function run(){
@@ -378,10 +373,6 @@
 
     $('mode').addEventListener('change', function(){ state.mode = this.value; rebuildData(); });
     $('algorithm').addEventListener('change', function(){ rebuildData(); });
-    $('metricType').addEventListener('change', function(){ 
-      state.metricType = this.value; 
-      updateMetricDisplay(); 
-    });
 
     $('size').addEventListener('input', function(){ $('sizeVal').textContent = String(this.value); rebuildData(); });
     $('speed').addEventListener('input', function(){ $('speedVal').textContent = String(this.value)+' ms'; state.speed = parseInt(this.value,10); });
@@ -449,12 +440,15 @@
             <option value="cocktail">Cocktail Sort (PY)</option>
           </select>
         </div>
-        <div class="row" style="margin-top:8px">
-          <select id="metricType">
-            <option value="time">Tiempo (segundos)</option>
-            <option value="swaps">Cantidad de swaps</option>
-          </select>
-          <span class="pill" id="metricValue">0.000 s</span>
+        <div style="margin-top:8px">
+          <div style="margin-bottom:8px">
+            <small class="pill">Tiempo</small>
+            <span class="pill" id="metricTime">0.000 s</span>
+          </div>
+          <div>
+            <small class="pill">Swaps</small>
+            <span class="pill" id="metricSwaps">0</span>
+          </div>
         </div>
       </div>
 
