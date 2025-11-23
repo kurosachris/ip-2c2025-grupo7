@@ -6,29 +6,39 @@ j = 0
 def init(vals):
     global items, n, i, j
     items = list(vals)
-    n = len(items)
-    i = 0
-    j = 0
-
+    n = len(items) #Cantidad de elementos de la lista
+    i = 0#Pasada actual (cuántos elementos ya están ordenados al final)
+    j = 0#Indice de comparación dentro de esa pasada
 def step():
-    global items, n, i, j, swapped#Ponemos el global en esta parte para no usar un for ya que si usamos el for se va a resolver todo de 1 y no se va poder apreciar a animacion
-    if i>=n-1:
-        return {"a": -1, "b": -1, "swap": False, "done": True}#lo que suecede aqui es que siempre se va a ir poniendo en la parte final el mas alto
-    if j<n-i-1:
-        if items[j]>items[j+1]:#aca sucede la comparativa de items donde al ponerle el indice j que va a ser que esta cambiando constante, para asi hacer que el item llegue a la derecha
-            items[j], items[j+1]=items[j+1],items[j]#aca sucede el swapeo donde el item[j] y el item[j+1], su comparativa va a seguir hasta que todo el programa quede ordenado(falta hacer que lo mas pequenño quede a la izquierda y que vaya hasta la derecha)
-            swapped=True
-            resultado= {"a":j, "b":j+1 ,"swap":True, "done":False}#aca sucede si el swap es true se hace el cambio en hasta que termina
+    global items, n, i, j, swapped
+    if i>=n-1:#Si ya hicimos todas las pasadas correspondientes el algoritmo termina
+        return {"a": -1, "b": -1, "swap": False, "done": True}
+        #Tanto "a" como "b"son los indices que utilizamos para comparar(el -1 que se encuentra en a y b es un marcador que demuestra que no tenenemos indices activos)
+        #Swap:Indica si hubo un intercambio, en este caso swap es false por lo que no se realizo ningun intercambio
+        #Done:Es el que controla cuando termina el programa, como Done esta en True significa que el programa termino
+
+    if j<n-i-1:#Comparacion que se realiza dentro de la pasada actual
+        if items[j]>items[j+1]:
+            #Si el elemento con el indice j es mayor que el elemento con el indice j+1 se realiza un swap
+            items[j], items[j+1]=items[j+1],items[j]
+            swapped=True#La bandera funciona para indicar que si hubo un swapeo
+            resultado= {"a":j, "b":j+1 ,"swap":True, "done":False}
+            #A y B toman los valores de los elementos comparados, A es el primer elemento que se compara y B el segundo
+            #En este caso swap es True porque si hubo un intercambio
+            #Done siguien siendo false porque todavia la lista no queda ordenada
         else:
-            resultado= {"a":j, "b":j+1 ,"swap":False, "done":False}#en cambio a la linea anterior este es el caso en donde no se lleve a cabo el cambio
-        j=j+1#en esta parte es donde le aumentamos el valor a j para que puede seguir iterando 
+            #Si no hubo un swap tambien registramos la comparacion que se realizo
+            resultado= {"a":j, "b":j+1 ,"swap":False, "done":False}
+        j=j+1#Aumentamos j para pasar al siguiente par de elementos(j y j+1) que se encuentran en la pasada actual
         return resultado
     else:
-        if not swapped:#si no hubo un intercambio en toda la lista,en su defecto la lista queda ordenada
+        #Se ejecuta cuando se llega al final de la pasada 
+        if not swapped:
+            #Si no se realizo ningun swap, significa que la lista esta ordenada
             return {"a": -1, "b": -1, "swap": False, "done": True}
-        swapped=False#esto indica el reinicio del indicador de intercambio 
-        j=0#indica que se vuelve al inicio de la lista para que empiece la siguiente pasada
-        i=i+1#se lleva a acabo la siguiente pasada de la lista 
+        swapped=False #Reiniciamos la bandera de intercambio
+        j=0           #Volvemos al inicio de la lista
+        i=i+1         #Avanzamos a la siguiente pasada
         return step()
     
 

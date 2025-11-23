@@ -24,7 +24,7 @@ def step():
                 ret={"a": j-1, "b": j, "swap": True, "done": False}#Se devuelve el estado con los items que realizaron el swap(a=j-1 y b=j), como se realizo el swap, "swap"se coloca en true 
                 j=j-1#Indica que J se mueve una posicion hacia la izquierda para seguir comparando
                 return ret
-        else:#Si no se realiza un swap significa que items en la poscion 
+        else:#Si no se realiza un swap significa que items estan en su poscion correspondiente 
               i=i+1#Avanza a i al siguiente elemento
               j=None#Se resetea 
         return {"a": -1, "b": i-1, "swap": False, "done": False}
