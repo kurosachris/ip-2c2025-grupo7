@@ -13,26 +13,21 @@ def step():
     global items, n, i, j, swapped
     if i>=n-1:#Si ya hicimos todas las pasadas correspondientes el algoritmo termina
         return {"a": -1, "b": -1, "swap": False, "done": True}
-        #Tanto "a" como "b"son los indices que utilizamos para comparar(el -1 que se encuentra en a y b es un marcador que demuestra que no tenenemos indices activos)
-        #Swap:Indica si hubo un intercambio, en este caso swap es false por lo que no se realizo ningun intercambio
-        #Done:Es el que controla cuando termina el programa, como Done esta en True significa que el programa termino
-
+            #-1 marcador incies activos
+            #Done true representa que el programa termino
+    
     if j<n-i-1:#Comparacion que se realiza dentro de la pasada actual
         if items[j]>items[j+1]:
-            #Si el elemento con el indice j es mayor que el elemento con el indice j+1 se realiza un swap
             items[j], items[j+1]=items[j+1],items[j]
             swapped=True#La bandera funciona para indicar que si hubo un swapeo
             resultado= {"a":j, "b":j+1 ,"swap":True, "done":False}
-            #A y B toman los valores de los elementos comparados, A es el primer elemento que se compara y B el segundo
-            #En este caso swap es True porque si hubo un intercambio
-            #Done siguien siendo false porque todavia la lista no queda ordenada
+            #A y B toman los valores de los elementos comparados y swapean
         else:
-            #Si no hubo un swap tambien registramos la comparacion que se realizo
+            #Si no hubo un swap se registra cambio
             resultado= {"a":j, "b":j+1 ,"swap":False, "done":False}
-        j=j+1#Aumentamos j para pasar al siguiente par de elementos(j y j+1) que se encuentran en la pasada actual
+        j=j+1#Aumentamos j para pasar al siguiente par de elementos
         return resultado
     else:
-        #Se ejecuta cuando se llega al final de la pasada 
         if not swapped:
             #Si no se realizo ningun swap, significa que la lista esta ordenada
             return {"a": -1, "b": -1, "swap": False, "done": True}
