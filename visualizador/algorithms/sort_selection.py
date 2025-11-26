@@ -33,21 +33,21 @@ def step():
         
         return {"a": min_idx, "b": j, "swap": False, "done": False}
     
-    elif fase == "swap":    #
+    elif fase == "swap":    # inicia la fase de swap
         swap = False
-        a = i
-        b = min_idx
+        a = i                   # guarda el índice actual para retornar
+        b = min_idx             # guarda el índice del mínimo encontrado
         
-        if min_idx != i:
+        if min_idx != i:    # realiza un swap si el mínimo no está en la posición correcta
             items[i], items[min_idx] = items[min_idx], items[i]
             swap = True
         
-        i += 1
-        j = i + 1
-        min_idx = i
-        fase = "buscar"
+        i += 1                  # avanza al siguiente elemento a ordenar
+        j = i + 1               # reinicia la búsqueda desde la siguiente posición
+        min_idx = i             # reinicia el índice del mínimo
+        fase = "buscar"         # vuelve a la fase de búsqueda
         
-        if i >= n-1:
+        if i >= n-1:    # verifica si el algoritmo ya terminó (casi todos elementos ordenados)
             return {"done": True}
         
         return {"a": a, "b": b, "swap": swap, "done": False}
