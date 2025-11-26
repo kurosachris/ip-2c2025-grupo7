@@ -16,7 +16,7 @@ def step():
         global items, n, i, j
         if i>=n:#Si i ya llego al final de la lista, significa que el programa termino
             return{"a": -1, "b": i-1, "swap":False, "done": True}
-            #-1 es un marcador que no tenemos indices activos 
+            #-1 es un marcador que indica, que no tenemos indices activos 
             
         
         if j ==None:#Inicializador de j para empezar una nueva insercion

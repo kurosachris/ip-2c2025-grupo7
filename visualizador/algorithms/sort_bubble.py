@@ -13,7 +13,7 @@ def step():
     global items, n, i, j, swapped
     if i>=n-1:#Si ya hicimos todas las pasadas correspondientes el algoritmo termina
         return {"a": -1, "b": -1, "swap": False, "done": True}
-            #-1 marcador incies activos
+            #-1 marcador que no tenemos indices activos
             #Done true representa que el programa termino
     
     if j<n-i-1:#Comparacion que se realiza dentro de la pasada actual
@@ -23,7 +23,7 @@ def step():
             resultado= {"a":j, "b":j+1 ,"swap":True, "done":False}
             #A y B toman los valores de los elementos comparados y swapean
         else:
-            #Si no hubo un swap se registra cambio
+            #Si no hubo un swap se registra la comparacion 
             resultado= {"a":j, "b":j+1 ,"swap":False, "done":False}
         j=j+1#Aumentamos j para pasar al siguiente par de elementos
         return resultado
